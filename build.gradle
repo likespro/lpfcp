@@ -1,0 +1,59 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '2.0.21'
+    id 'jacoco'
+}
+
+group = 'eth.likespro'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+jacoco {
+    toolVersion = "0.8.10"
+}
+
+dependencies {
+    implementation 'com.github.likespro:commons:1.8.4'
+
+    implementation("io.ktor:ktor-server-netty:2.3.7")
+    implementation("io.ktor:ktor-server-core:2.3.7")
+    implementation('ch.qos.logback:logback-classic:1.5.13')
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+}
+
+tasks.register('printProjectName') {
+    doLast {
+        println rootProject.name
+    }
+}
+tasks.register('printProjectVersion') {
+    doLast {
+        println version
+    }
+}
+
+java{
+    withJavadocJar()
+    withSourcesJar()
+}
+
+kotlin {
+    jvmToolchain(17)
+}
